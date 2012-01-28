@@ -1,55 +1,49 @@
 // coding: utf-8
-
+#include <stdlib.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
 
+#define NGA fck // Ganzer Fuckup
+#define NHA 255 // Halbe Note
+#define NVI 127 // Viertelnote
+#define NAC 63  // Achtelnote
+#define NSE 31  // Sechzehntelnote
+
 volatile uint16_t toene[] = {
-	9530,	//0 - c'
-	8490,	//1 - d'
-	7570,	//2 - e'
-	7130,	//3 - f'
-	6360,	//4 - g'
-	5660,	//5 - a'
-	0440,	//6 - h'
-	37640,	//7 - c''
-	32440,	//8 - d''
-	24780,	//9 - e''
-	25640,	//10- f''
-	21740,	//11- g''
-	18420,	//12- a''
-	15420,	//13- h''
-	13740,	//14- c'''
-	11104,	//15- d'''
-	4880,	//16- e'''
-	7480,	//17- f'''
-	5840,	//18- g'''
-	4104,	//19- a'''
-	2540,	//20- h'''
-	1
+	10,		//  0 - Zu hoher Ton -> Pause
+	30577,	//  1 - c'
+	28861,	//  2 - cis'
+	27241,	//  3 - d'
+	25712,	//  4 - dis'
+	24269,	//  5 - e'
+	22907,	//  6 - f'
+	21621,	//  7 - fis'
+	20407,	//  8 - g'
+	19262,	//  9 - gis'
+	18181,	// 10 - a'
+	17160,	// 11 - ais'
+	16197,	// 12 - h'
+	15288,	// 13 - c''
+	14430,	// 14 - cis''
+	13620,	// 15 - d''
+	12855,	// 16 - dis''
+	12134,	// 17 - e''
+	11453,	// 18 - f''
+	10810,	// 19 - fis''
+	10203,	// 20 - g''
+	9630,	// 21 - gis''
+	9090,	// 22 - a''
+	8580,	// 23 - ais''
+	8098,	// 24 - h''
+	7644	// 25 - c'''
 };
 
 volatile uint8_t tud[] = {
-	12, 53,
-	3, 42,
-	13, 42,
-	2, 42,
-	18, 42,
-	12, 53,
-	8, 42,
-	16, 42,
-	12, 42,
-	7, 42,
-	16, 53,
-	3, 42,
-	16, 42,
-	12, 42,
-	7, 42,
-	15, 42,
-	3, 42,
-	5, 42,
-	3, 42,
-	21, 10
+	17, NVI,
+	16, NVI,
+	11, NVI,
+	5,  NVI
 };
 
 volatile uint8_t data, dauer;
@@ -60,7 +54,7 @@ ISR(TIMER2_COMP_vect){
 		dauer++;
 	} else {
 		data += 2;
-		if (data > 24)
+		if (data > 8)
 			data = 0;
 		OCR1A = toene[tud[data]];
 		dauer = 0;
@@ -70,12 +64,12 @@ ISR(TIMER2_COMP_vect){
 void init_timer1(void){
 	OCR1A = toene[tud[data]];
 	TCCR1A |= (1<<COM1A0);
-	TCCR1B |= (1<<WGM12)|(1<<CS10);//|(1<<CS10);
+	TCCR1B |= (1<<WGM12)|(1<<CS10);
 }
 
 void init_timer2(void){
-	OCR2 = 155;
-	TCCR2 |= (1<<WGM21)|(1<<CS22);
+	OCR2 = 60;
+	TCCR2 |= (1<<WGM21)|(1<<CS22)|(1<<CS21)|(1<<CS20);
 	TIMSK |= (1<<OCIE2);
 }
 
@@ -94,7 +88,7 @@ int main(void) {
 	init();
 
 	while(1) {
-		if ((PINB & (1<<PB0))){
+		if (PINB & (1<<PB0)){
 			TCCR1A &= ~(1<<COM1A0);
 		} else {
 			TCCR1A |= (1<<COM1A0);
