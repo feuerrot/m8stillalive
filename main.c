@@ -4,46 +4,166 @@
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
 
+#define LAENGE 123
+
 #define NGA fck // Ganzer Fuckup
 #define NHA 255 // Halbe Note
 #define NVI 127 // Viertelnote
 #define NAC 63  // Achtelnote
 #define NSE 31  // Sechzehntelnote
 
-volatile uint16_t toene[] = {
-	10,		//  0 - Zu hoher Ton -> Pause
-	30577,	//  1 - c'
-	28861,	//  2 - cis'
-	27241,	//  3 - d'
-	25712,	//  4 - dis'
-	24269,	//  5 - e'
-	22907,	//  6 - f'
-	21621,	//  7 - fis'
-	20407,	//  8 - g'
-	19262,	//  9 - gis'
-	18181,	// 10 - a'
-	17160,	// 11 - ais'
-	16197,	// 12 - h'
-	15288,	// 13 - c''
-	14430,	// 14 - cis''
-	13620,	// 15 - d''
-	12855,	// 16 - dis''
-	12134,	// 17 - e''
-	11453,	// 18 - f''
-	10810,	// 19 - fis''
-	10203,	// 20 - g''
-	9630,	// 21 - gis''
-	9090,	// 22 - a''
-	8580,	// 23 - ais''
-	8098,	// 24 - h''
-	7644	// 25 - c'''
-};
+#define PAUSE	10
+#define C1		30577
+#define CIS1	28861
+#define D1		27241
+#define DIS1	25712
+#define E1		24269
+#define F1		22907
+#define FIS1	21621
+#define G1		20407
+#define GIS1	19262
+#define A1		18181
+#define AIS1	17160
+#define H1		16197
+#define C2		15288
+#define CIS2	14430
+#define D2		13620
+#define DIS2	12855
+#define E2		12134
+#define F2		11453
+#define FIS2	10810
+#define G2		10203
+#define GIS2	9630
+#define A2		9090
+#define AIS2	8580
+#define H2		8098
+#define C3		7644
 
-volatile uint8_t tud[] = {
-	17, NVI,
-	16, NVI,
-	11, NVI,
-	5,  NVI
+volatile uint16_t tud[] = {
+	PAUSE,	255,
+	G2,		NAC,
+	FIS2,	NAC,
+	E2,		NAC,
+	E2,		NAC,
+	FIS2,	NAC,
+	PAUSE,	NHA,
+	PAUSE,	NHA,
+	A1,		NAC,
+	G2,		NAC,
+	FIS2,	NAC,
+	E2,		NAC,
+	E2,		NAC,
+	FIS2,	NAC,
+	PAUSE,	NVI,
+	D2, 	NVI,
+	E2,		NAC,
+	A1,		NAC,
+	A1,		NAC,
+	PAUSE,	NHA,
+	PAUSE,	NHA,
+	A1,		NAC,
+	E2,		NVI,
+	FIS2,	NAC,
+	G2,		NAC,
+	G2,		NAC,
+	E2,		NAC,
+	CIS2,	NAC,
+	CIS2,	NAC,
+	D2,		NVI,
+	D2,		NAC,
+	E2,		NVI,
+	A1,		NAC,
+	A1,		NAC,
+	A1,		NAC,
+	FIS2,	NVI,
+	PAUSE,	NHA,
+	PAUSE,	NHA,
+	G2,		NAC,
+	FIS2,	NAC,
+	E2,		NAC,
+	E2,		NAC,
+	FIS2,	NAC,
+	PAUSE,	NHA,
+	PAUSE,	NHA,
+	A1,		NAC,
+	G2,		NAC,
+	FIS2,	NAC,
+	E2,		NAC,
+	E2,		NAC,
+	PAUSE,	NVI,
+	FIS2,	NAC,
+	D2,		NAC,
+	PAUSE,	NVI,
+	E2,		NAC,
+	A1,		NAC,
+	A1,		NAC,
+	PAUSE,	NHA,
+	PAUSE,	NVI,
+	E2,		NVI,
+	FIS2,	NAC,
+	G2,		NAC,
+	G2,		NAC,
+	E2,		NAC,
+	CIS2,	NAC,
+	CIS2,	NAC,
+	D2,		NAC,
+	E2,		NAC,
+	PAUSE,	NAC,
+	A1,		NAC,
+	D2,		NAC,
+	E2,		NAC,
+	F2,		NAC,
+	E2,		NAC,
+	D2,		NAC,
+	C2, 	NAC,
+	PAUSE,	NVI,
+	A1,		NAC,
+	AIS1,	NAC,
+	C2,		NVI,
+	F2,		NVI,
+	E2,		NAC,
+	D2,		NAC,
+	D2,		NAC,
+	C2,		NAC,
+	D2,		NAC,
+	C2,		NAC,
+	C2,		NVI,
+	C2,		NVI,
+	A1,		NAC,
+	AIS1,	NAC,
+	C2,		NVI,
+	F2,		NVI,
+	G2,		NAC,
+	F2,		NAC,
+	E2,		NAC,
+	D2,		NAC,
+	D2,		NAC,
+	E2,		NAC,
+	F2,		NVI,
+	F2,		NVI,
+	G2,		NAC,
+	A2,		NAC,
+	AIS2,	NAC,
+	AIS2,	NAC,
+	A2,		NVI,
+	G2,		NVI,
+	F2,		NAC,
+	G2,		NAC,
+	A2,		NAC,
+	A2,		NAC,
+	G2,		NVI,
+	F2,		NVI,
+	D2,		NAC,
+	C2,		NAC,
+	D2,		NAC,
+	F2,		NAC,
+	F2,		NAC,
+	E2,		NAC,
+	E2,		NAC,
+	E2,		NAC,
+	FIS2,	NAC,
+	FIS2,	NAC,
+	FIS2,	NAC
 };
 
 volatile uint8_t data, dauer;
@@ -54,15 +174,15 @@ ISR(TIMER2_COMP_vect){
 		dauer++;
 	} else {
 		data += 2;
-		if (data > 8)
+		if (data > LAENGE*2)
 			data = 0;
-		OCR1A = toene[tud[data]];
+		OCR1A = tud[data];
 		dauer = 0;
 	}
 }
 
 void init_timer1(void){
-	OCR1A = toene[tud[data]];
+	OCR1A = tud[data];
 	TCCR1A |= (1<<COM1A0);
 	TCCR1B |= (1<<WGM12)|(1<<CS10);
 }
@@ -88,11 +208,13 @@ int main(void) {
 	init();
 
 	while(1) {
+#if 0
 		if (PINB & (1<<PB0)){
 			TCCR1A &= ~(1<<COM1A0);
 		} else {
 			TCCR1A |= (1<<COM1A0);
 		}
+#endif
 	}
 	return 0;
 }
