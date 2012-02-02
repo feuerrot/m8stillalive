@@ -1,10 +1,8 @@
 // coding: utf-8
-#include <stdlib.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <avr/sleep.h>
 
-#define LAENGE 123
+#define LAENGE 200
 
 #define NGA fck // Ganzer Fuckup
 #define NHA 255 // Halbe Note
@@ -40,7 +38,6 @@
 #define C3		7644
 
 volatile uint16_t tud[] = {
-	PAUSE,	255,
 	G2,		NAC,
 	FIS2,	NAC,
 	E2,		NAC,
@@ -163,10 +160,144 @@ volatile uint16_t tud[] = {
 	E2,		NAC,
 	FIS2,	NAC,
 	FIS2,	NAC,
-	FIS2,	NAC
+	FIS2,	NAC,
+	PAUSE,	NHA,
+	PAUSE,	NHA,
+	A1,		NAC,
+	G2,		NAC,
+	FIS2,	NAC,
+	E2,		NAC,
+	E2,		NAC,
+	E2,		NSE,
+	FIS2,	NAC,
+	FIS2,	NSE,
+	PAUSE,	NHA,
+	PAUSE,	NVI,
+	G2,		NAC,
+	FIS2,	NAC,
+	E2,		NAC,
+	E2,		NAC,
+	E2,		NVI,
+	FIS2,	NAC,
+	D2,		NAC,
+	D2,		NAC,
+	E2,		NVI,
+	A1,		NAC,
+	A1,		NAC,
+	PAUSE,	NAC,
+	PAUSE,	NVI,
+	PAUSE,	NHA,
+	E2,		NVI,
+	FIS2,	NAC,
+	G2,		NAC,
+	G2,		NVI,
+	E2,		NVI,
+	CIS2,	NVI,
+	D2,		NAC,
+	E2,		NAC,
+	E2,		NAC,
+	A1,		NAC,
+	A1,		NAC,
+	A1,		NAC,
+	FIS2,	NAC,
+	PAUSE,	NAC,
+	PAUSE,	NVI,
+	A1, 	NAC,
+	G2,		NAC,
+	FIS2,	NAC,
+	E2,		NAC,
+	E2,		NAC,
+	FIS2,	NAC,
+	PAUSE,	NAC,
+	PAUSE,	NVI,
+	PAUSE,	NHA,
+	A1,		NAC,
+	G2,		NAC,
+	FIS2,	NAC,
+	E2,		NAC,
+	E2,		NAC,
+	PAUSE,	NVI,
+	FIS2,	NAC,
+	D2, 	NAC,
+	PAUSE,	NVI,
+	E2,		NAC,
+	A1,		NAC,
+	A1,		NAC,
+	PAUSE,	NVI,
+	PAUSE,	NHA,
+	E2,		NVI,
+	FIS2,	NAC,
+	G2,		NAC,
+	G2,		NVI,
+	E2,		NVI,
+	CIS2,	NVI,
+	D2,		NAC,
+	E2,		NAC,
+	PAUSE,	NAC,
+	A1,		NAC,
+	D2,		NAC,
+	E2,		NAC,
+	F2,		NAC,
+	E2,		NAC,
+	D2,		NAC,
+	C2,		NAC,
+	PAUSE,	NVI,
+	A1,		NAC,
+	AIS1,	NAC,
+	C2,		NVI,
+	F2,		NVI,
+	E2,		NAC,
+	D2,		NAC,
+	D2,		NAC,
+	C2,		NAC,
+	D2,		NAC,
+	C2,		NAC,
+	C2,		NVI,
+	C2,		NVI,
+	A1,		NAC,
+	AIS1,	NAC,
+	C2,		NVI,
+	F2,		NVI,
+	G2,		NAC,
+	F2,		NAC,
+#if 0
+	E2,		NAC,
+	D2,		NAC,
+	D2,		NAC,
+	E2,		NAC,
+	F2,		NVI,
+	F2,		NVI,
+	G2,		NAC,
+	A2,		NAC,
+	AIS2,	NAC,
+	AIS2,	NAC,
+	A2,		NVI,
+	G2,		NVI,
+	F2,		NAC,
+	G2,		NAC,
+	A2,		NAC,
+	A2,		NAC,
+	G2,		NAC,
+	F2,		NAC,
+	F2,		NVI,
+	D2,		NAC,
+	C2,		NAC,
+	D2,		NAC,
+	F2,		NAC,
+	F2,		NAC,
+	E2,		NAC,
+	E2,		NAC,
+	E2,		NAC,
+	FIS2,	NAC,
+	FIS2,	NAC,
+	FIS2,	NAC,
+	PAUSE,	NVI,
+	PAUSE,	NHA
+#endif
 };
 
-volatile uint8_t data, dauer;
+volatile uint8_t data;
+volatile uint8_t dauer;
 
 
 ISR(TIMER2_COMP_vect){
@@ -208,13 +339,11 @@ int main(void) {
 	init();
 
 	while(1) {
-#if 0
 		if (PINB & (1<<PB0)){
 			TCCR1A &= ~(1<<COM1A0);
 		} else {
 			TCCR1A |= (1<<COM1A0);
 		}
-#endif
 	}
 	return 0;
 }
