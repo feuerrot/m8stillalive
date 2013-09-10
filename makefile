@@ -150,12 +150,16 @@ CPPDEFS = -DF_CPU=$(F_CPU)UL
 CFLAGS = -g$(DEBUG)
 CFLAGS += $(CDEFS)
 CFLAGS += -O$(OPT)
+CFLAGS += -flto
+CFLAGS += -fwhole-program
+CFLAGS += -fmerge-all-constants
 CFLAGS += -funsigned-char
 CFLAGS += -funsigned-bitfields
 CFLAGS += -fpack-struct
 CFLAGS += -fshort-enums
 CFLAGS += -Wall
 CFLAGS += -Wstrict-prototypes
+CFLAGS += -mstrict-X
 #CFLAGS += -mshort-calls
 #CFLAGS += -fno-unit-at-a-time
 #CFLAGS += -Wundef
